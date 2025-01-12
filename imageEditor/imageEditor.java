@@ -1,4 +1,5 @@
 package imageEditor;
+
 import java.util.*;
 
 import java.awt.*;
@@ -208,17 +209,24 @@ public static BufferedImage Image_Blur(BufferedImage inputImage, int n){
                     File brightness = new File("Edited_Image.jpg");
                     ImageIO.write(Brightness, "jpg", brightness);
                   }
-                        if(N==7){
-                        System.out.println("Enter the blurness size");
-                        int size = sc.nextInt();
-                          BufferedImage blur = Image_Blur(inputImage,size);
-                          File Blurr = new File("Edited_Image.jpg");
-                          ImageIO.write(blur, "jpg", Blurr);
-                       }
-                       if(N==8){
-                                printpixelvalues(inputImage);
-                                
+
+                  if(N==7){
+                      System.out.println("Enter the blurness size");
+                      int size = sc.nextInt();
+                      BufferedImage blur = Image_Blur(inputImage,size);
+                      File Blurr = new File("Edited_Image.jpg");
+                      ImageIO.write(blur, "jpg", Blurr);
+                  }
+                  if(N==8){
+                      printpixelvalues(inputImage);      
+                  }
+
+        }
 }
 
-      }
-}
+
+
+
+
+
+
