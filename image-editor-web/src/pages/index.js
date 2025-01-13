@@ -45,7 +45,11 @@ const ImageEditor = () => {
       const response = await fetch(url, {
         method: 'POST',
         body: formData,
-      });
+        headers: {
+            'Accept': 'application/json',
+        },
+        mode: 'cors' 
+    });
 
       if (!response.ok) {
         throw new Error(`Processing failed: ${response.statusText}`);
