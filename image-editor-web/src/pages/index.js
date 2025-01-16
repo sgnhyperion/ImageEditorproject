@@ -18,28 +18,12 @@ const ImageEditor = () => {
     onSubmit: () => {},
   });
 
-  // Add image compression before upload
-  const compressImage = async (file) => {
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 1920
-    }
-    try {
-      return await imageCompression(file, options);
-    } catch (error) {
-      console.error(error);
-      return file;
-    }
-  }
-
-  // Modify handleImageUpload
-  const handleImageUpload = async (e) => {
+  const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const compressedFile = await compressImage(file);
-      setImage(compressedFile);
-      setPreview(URL.createObjectURL(compressedFile));
-      setProcessedImage(null);
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+      setProcessedImage(null); // Reset processed image when new image is uploaded
     }
   };
 
