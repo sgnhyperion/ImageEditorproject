@@ -1,4 +1,7 @@
-target/
-.git
 .gitignore
 README.md
+
+target/
+.git/
+*.log
+node_modules/
