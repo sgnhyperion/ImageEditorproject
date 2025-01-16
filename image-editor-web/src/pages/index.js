@@ -3,7 +3,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import InputModal from '@/components/InputModal';
 import API_ENDPOINTS from '@/config/api';
 import { Download } from 'lucide-react';
-import axios from 'axios';
 
 const ImageEditor = () => {
   const [image, setImage] = useState(null);
@@ -59,22 +58,27 @@ const ImageEditor = () => {
         url = url(value);
       }
 
-      const response = await axios.post(url, formData, {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data'
+            'Accept': 'application/json',
         },
-        responseType: 'blob'
-      });
+        mode: 'cors' 
+    });
 
-      const blob = new Blob([response.data], { type: 'image/jpeg' });
+      if (!response.ok) {
+        throw new Error(`Processing failed: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
       const processedBlob = new File([blob], 'processed.jpg', { type: 'image/jpeg' });
       setProcessedImage(processedBlob);
       setPreview(URL.createObjectURL(blob));
       setImage(processedBlob);
     } catch (err) {
       console.error('Error:', err);
-      setError(err.response?.data?.message || err.message);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
