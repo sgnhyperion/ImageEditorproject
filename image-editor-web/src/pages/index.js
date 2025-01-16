@@ -3,6 +3,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import InputModal from '@/components/InputModal';
 import API_ENDPOINTS from '@/config/api';
 import { Download } from 'lucide-react';
+import axios from 'axios';
 
 const ImageEditor = () => {
   const [image, setImage] = useState(null);
@@ -18,12 +19,28 @@ const ImageEditor = () => {
     onSubmit: () => {},
   });
 
-  const handleImageUpload = (e) => {
+  // Add image compression before upload
+  const compressImage = async (file) => {
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920
+    }
+    try {
+      return await imageCompression(file, options);
+    } catch (error) {
+      console.error(error);
+      return file;
+    }
+  }
+
+  // Modify handleImageUpload
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(file);
-      setPreview(URL.createObjectURL(file));
-      setProcessedImage(null); // Reset processed image when new image is uploaded
+      const compressedFile = await compressImage(file);
+      setImage(compressedFile);
+      setPreview(URL.createObjectURL(compressedFile));
+      setProcessedImage(null);
     }
   };
 
@@ -42,27 +59,22 @@ const ImageEditor = () => {
         url = url(value);
       }
 
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData,
+      const response = await axios.post(url, formData, {
         headers: {
-            'Accept': 'application/json',
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data'
         },
-        mode: 'cors' 
-    });
+        responseType: 'blob'
+      });
 
-      if (!response.ok) {
-        throw new Error(`Processing failed: ${response.statusText}`);
-      }
-
-      const blob = await response.blob();
+      const blob = new Blob([response.data], { type: 'image/jpeg' });
       const processedBlob = new File([blob], 'processed.jpg', { type: 'image/jpeg' });
       setProcessedImage(processedBlob);
       setPreview(URL.createObjectURL(blob));
       setImage(processedBlob);
     } catch (err) {
       console.error('Error:', err);
-      setError(err.message);
+      setError(err.response?.data?.message || err.message);
     } finally {
       setLoading(false);
     }
