@@ -2,6 +2,7 @@
 
 A full-stack web application for real-time image editing, built with Next.js frontend and Spring Boot backend. This application provides various image manipulation features with an intuitive user interface.
 
+* Note : May not work on large size images
 
 ## Features
 
